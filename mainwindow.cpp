@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartClicked()));
 	board = new Board();
-	game = new TicTacToe(board);
 	boardWidget = new BoardWidget(this);
 
 	ui->verticalLayout->addWidget(boardWidget);

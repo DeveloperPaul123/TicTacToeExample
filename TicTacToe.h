@@ -100,14 +100,4 @@ private:
 	ComputerMove getBestMove(Board& board, Player *player);
 };
 
-
-
-class TicTacToe {
-public:
-	TicTacToe(Board *board);
-	Board getBoard();
-private:
-	Board *mBoard;
-};
-
 #endif

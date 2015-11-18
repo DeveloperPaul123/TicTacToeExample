@@ -1,46 +1,90 @@
 #include "TicTacToe.h"
 
+/**
+* Default constructor. 
+*/
 Point::Point() {
 
 }
 
+/**
+* Constructor with x and y coordinate. 
+* @param x x coordinate. 
+* @param y y coordinate. 
+*/
 Point::Point(int x, int y) {
 	mX = x;
 	mY = y;
 }
 
+/**
+* Returns the x coordinate. 
+* @return int the x coordinate. 
+*/
 int Point::getX() {
 	return mX;
 }
 
+/**
+* Returns the y coordinate. 
+* @return int the y coordinate. 
+*/
 int Point::getY() {
 	return mY;
 }
 
+/**
+* Converts the point to a qstring. 
+* @return QString the point in QString form. 
+*/
 QString Point::toString() {
 	return QString("[%1, %2]").arg(mX, mY);
 }
 
+/**
+* Compares the current point to a given point. 
+* @param p the point to compare to. 
+* @return bool true if the points are equal, false otherwise. 
+*/
 bool Point::equals(Point p) {
 	return (p.getX() == mX && p.getY() == mY);
 }
 
+/**
+* Default constructor for the player class. 
+*/
 Player::Player() {
 	mType = COMPUTER;
 }
 
+/**
+* Base class for a player. 
+* @param type the player type, USER or COMPUTER
+*/
 Player::Player(PlayerType type) {
 	mType = type;
 }
 
+/**
+* Returns the player's playertype. 
+* @return PlayerType the players type. 
+*/
 PlayerType Player::getPlayerType() {
 	return mType;
 }
 
+/**
+* Sets the players playertype. 
+* @param type the new PlayerType. 
+*/
 void Player::setPlayerType(PlayerType type) {
 	mType = type;
 }
 
+/**
+* Widget to display a tic tac toe board. 
+* @param parent the QWidget parent of this widget. 
+*/
 BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	resize(sizeHint());
@@ -55,6 +99,10 @@ BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
 
 }
 
+/**
+* Updates the board based on the played squares of the board. 
+* @param b the current Board. 
+*/
 void BoardWidget::updateBoard(Board &b) {
 	//update the board based on current play. 
 	vector<Point*> points = b.getPlayedPoints();
@@ -69,6 +117,10 @@ void BoardWidget::updateBoard(Board &b) {
 	update();
 }
 
+/**
+* Called when the widget draws itself. 
+* @param event the QPaintEvent passed to this widget. 
+*/
 void BoardWidget::paintEvent(QPaintEvent *event) {
 	QPainter painter(this);
 	painter.setBrush(Qt::NoBrush);
@@ -109,6 +161,9 @@ void BoardWidget::paintEvent(QPaintEvent *event) {
 
 }
 
+/**
+* Clears everything on the board. 
+*/
 void BoardWidget::resetBoard() {
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -118,6 +173,12 @@ void BoardWidget::resetBoard() {
 	update();
 }
 
+/**
+* Helper function to get an "X" to draw. 
+* @param row which row of the board we're drawing on.
+* @param col which column of the board we're drawing on. 
+* @return QPainterPath a path that can be drawn by the painter. 
+*/
 QPainterPath BoardWidget::getXPath(int row, int col) {
 	QPainterPath *path = new QPainterPath();
 	int thirdHeight = height() / 3;
@@ -134,6 +195,12 @@ QPainterPath BoardWidget::getXPath(int row, int col) {
 	return *path;
 }
 
+/**
+* Helper function to get an "O" to draw. 
+* @param row which row of the board we're drawing on. 
+* @param col which column of the board we're drawing on. 
+* @return QPainterPath the path that can be drawn by the painter. 
+*/
 QPainterPath BoardWidget::getOPath(int row, int col) {
 	QPainterPath *path = new QPainterPath();
 	int thirdHeight = height() / 3;
@@ -147,14 +214,22 @@ QPainterPath BoardWidget::getOPath(int row, int col) {
 	return *path;
 }
 
+/**
+* Size hint for the widget. Used when being laid out. 
+* @return QSize the size we want for the widget. 
+*/
 QSize BoardWidget::sizeHint() const {
 	return QSize(100, 100);
 }
 
+/**
+* Called when the user clicks the board. 
+* @param event the QMouseEvent passed to the widget. 
+*/
 void BoardWidget::mousePressEvent(QMouseEvent *event) {
 	int x = event->x();
 	int y = event->y();
-
+	//check where they clicked (i.e. which square on the board.
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			if (rects[i][j]->contains(x, y)) {
@@ -165,7 +240,12 @@ void BoardWidget::mousePressEvent(QMouseEvent *event) {
 	}
 }
 
+/**
+* Class that holds the current board and where each player has played. 
+*/
 Board::Board() {
+
+	//initialize the board and vectors. 
 	availablePoints = new vector<Point*>();
 	playedPoints = new vector<Point*>();
 
@@ -177,6 +257,11 @@ Board::Board() {
 	}
 }
 
+/**
+* Reads the board at a specified point. 
+* @param p the point to look at. 
+* @return PlayerType the contents of the board at the given point. 
+*/
 PlayerType Board::readBoard(Point p) {
 
 	if (board[p.getX()][p.getY()] == (int) USER) {
@@ -190,20 +275,26 @@ PlayerType Board::readBoard(Point p) {
 	}
 }
 
+/**
+* Checks if the game is over. A game is over if x has one, o has won or there is a tie. 
+* @return bool true if game is over. False otherwise. 
+*/
 bool Board::isGameOver() {
 	return (hasXWon() || hasOWon() || availablePoints->size() == 0);
 }
 
+/**
+* Checks to see if X has won. 
+* @return bool true if x has won, false otherwise. 
+*/
 bool Board::hasXWon() {
 	if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == USER) 
 		|| (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == USER)) {
-		// System.out.println("O Diagonal Win");
 		return true;
 	}
 	for (int i = 0; i < 3; ++i) {
 		if ((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] == USER)
 			|| (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] == USER)) {
-			//  System.out.println("O Row or Column win");
 			return true;
 		}
 	}
@@ -211,16 +302,18 @@ bool Board::hasXWon() {
 	return false;
 }
 
+/**
+* Checks to see if O has won. 
+* @return bool true if O has won, false otherwise. 
+*/
 bool Board::hasOWon() {
 	if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == COMPUTER)
 		|| (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == COMPUTER)) {
-		// System.out.println("O Diagonal Win");
 		return true;
 	}
 	for (int i = 0; i < 3; ++i) {
 		if ((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] == COMPUTER)
 			|| (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] == COMPUTER)) {
-			//  System.out.println("O Row or Column win");
 			return true;
 		}
 	}
@@ -228,14 +321,28 @@ bool Board::hasOWon() {
 	return false;
 }
 
+/**
+* Returns the current vector of played points. 
+* @return vector<Point*> the current vector of points. 
+*/
 vector<Point*> Board::getPlayedPoints() {
 	return *playedPoints;
 }
 
+/**
+* Returns a vector of available points. 
+* @return vector<Point*> a vector of available points. 
+*/
 vector<Point*> Board::getAvailablePoints() {
 	return *availablePoints;
 }
 
+/**
+* Adds a play to the current board. 
+* @param play the play point. 
+* @param player pointer to the player making the play. 
+* @return bool true if the play was made, false otherwise. 
+*/
 bool Board::addAPlay(Point play, Player *player) {
 	for (int i = 0; i < availablePoints->size(); i++) {
 		Point *p = availablePoints->at(i);
@@ -255,6 +362,10 @@ bool Board::addAPlay(Point play, Player *player) {
 	return false;
 }
 
+/**
+* Removes a play from the board. 
+* @param play the play to remove from the board. 
+*/
 void Board::removePlay(Point play) {
 	board[play.getX()][play.getY()] = 0;
 	availablePoints->push_back(new Point(play));
@@ -267,6 +378,9 @@ void Board::removePlay(Point play) {
 	}
 }
 
+/**
+* Resets everything. Clears the board. 
+*/
 void Board::clearBoard() {
 	availablePoints->clear();
 	availablePoints = new vector<Point*>();
@@ -280,24 +394,27 @@ void Board::clearBoard() {
 	}
 }
 
-TicTacToe::TicTacToe(Board *board) {
-	mBoard = board;
-}
-
-Board TicTacToe::getBoard() {
-	return *mBoard;
-}
-
+/**
+* Computer player. AI, extends player. 
+*/
 ComputerPlayer::ComputerPlayer(PlayerType type) : Player(type) {
 	depth = 0;
 }
 
+/**
+* Perfoms a move on the current board. 
+* @param board the current board. 
+*/
 void ComputerPlayer::performMove(Board &board) {
 	depth = 0;
 	ComputerMove move = getBestMove(board, new Player(COMPUTER));
 	board.addAPlay(move.p, new Player(COMPUTER));
 }
 
+/**
+* Set the difficulty of the computer player. This can be between 0 and 3.
+* @param diff the difficulty. 
+*/
 void ComputerPlayer::setDifficulty(int diff) {
 	int random = 0;
 	switch (diff) {
@@ -326,6 +443,15 @@ void ComputerPlayer::setDifficulty(int diff) {
 		break;
 	}
 }
+
+/**
+* Recursive function that gets the best move for the computer. Uses the 
+* minimax algorithm to go through all possible outcomes assuming the oppenent will
+* try to maximize his score. The computer will try to maximize his score as well. 
+* @param board the current board. 
+* @param player pointer to who is making the move. 
+* @return ComputerMove a move with a point and a score. 
+*/
 ComputerMove ComputerPlayer::getBestMove(Board& board, Player *player) {
 	
 	//base case, check for end state. 
@@ -342,22 +468,27 @@ ComputerMove ComputerPlayer::getBestMove(Board& board, Player *player) {
 		return ComputerMove(0);
 	}
 
+	//available points. 
 	vector<Point*> availablePoints = board.getAvailablePoints();
+	//vector to hold all the moves we make to look through them later. 
 	vector<ComputerMove> moves;
-
+	
+	//go through moves. 
 	for (int i = 0; i < availablePoints.size(); i++) {
 		ComputerMove move;
 		move.p = *availablePoints.at(i);
-		
+		//add move. 
 		board.addAPlay(*availablePoints.at(i), player);
-	
+		//recursive call. 
 		if (player->getPlayerType() == USER) {
 			move.score = getBestMove(board, new Player(COMPUTER)).score;
 		}
 		else if (player->getPlayerType() == COMPUTER) {
 			move.score = getBestMove(board, new Player(USER)).score;
 		}
+		//remember the move we made. 
 		moves.push_back(move);
+		//remove the move from the board. 
 		board.removePlay(*availablePoints.at(i));
 	}
 
@@ -383,5 +514,6 @@ ComputerMove ComputerPlayer::getBestMove(Board& board, Player *player) {
 		}
 	}
 
+	//return the best move. 
 	return moves[bestMove];
 }
