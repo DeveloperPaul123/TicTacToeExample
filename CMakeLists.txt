@@ -37,7 +37,6 @@ set(Project_Forms mainwindow.ui)
 find_package(Qt5Core)
 find_package(Qt5Gui)
 find_package(Qt5Widgets)
-find_package(Qt5SerialPort)
 
 #wrap the sources and the ui. 
 QT5_WRAP_CPP(Project_HEADERS_MOC ${Project_Headers})
@@ -48,10 +47,9 @@ QT5_WRAP_UI(Project_FORMS_HEADERS ${Project_Forms})
 add_library(GUI ${Project_FORMS_HEADERS} ${Project_FORMS_HEADERS})
 target_link_libraries(GUI Qt5::Widgets Qt5::Core Qt5::Gui)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
 #add other sources, libs and headers as executables. 
 add_executable(TicTacToe WIN32 ${Project_Sources} ${GUI} ${Project_Headers})
-target_link_libraries(TicTacToe GUI ${OpenCV_LIBS} Qt5::SerialPort)
+target_link_libraries(TicTacToe GUI)
 
 set(QT_VERSION_MAJOR} "5")
 
@@ -80,9 +78,27 @@ if(WIN32)
 		${Qt5Core_DIR}/../../../bin/Qt5Widgets.dll
 		${Qt5Core_DIR}/../../../bin/Qt5Xml.dll
 		${Qt5Core_DIR}/../../../bin/Qt5XmlPatterns.dll
-		${Qt5Core_DIR}/../../../bin/Qt5SerialPort.dll
         DESTINATION bin COMPONENT bin_tictactoe
     )
+	
+	install(FILES	
+		${Qt5Core_DIR}/../../../plugins/imageformats/qdds.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qgif.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qicns.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qico.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qjp2.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qjpeg.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qmng.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qsvg.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qtga.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qtiff.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qwbmp.dll
+		${Qt5Core_DIR}/../../../plugins/imageformats/qwebp.dll
+		DESTINATION bin/imageformats COMPONENT bin_tictactoe)
+		
+		install(FILES
+		${Qt5Core_DIR}/../../../plugins/platforms/qwindows.dll
+		DESTINATION bin/platforms COMPONENT bin_tictactoe)
 	else()
 		message(SEND_ERROR "Unsupported Compiler")
 	endif()	
@@ -95,7 +111,7 @@ if(WIN32)
 	SET(CPACK_PACKAGE_VERSION_PATCH ${TIC_TAC_TOE_VERSION_PATCH})
 	SET(CPACK_PACKAGE_INSTALL_DIRECTORY "TicTacToe ${TIC_TAC_TOE_VERSION_MAJOR}.${TIC_TAC_TOE_VERSION_MINOR}")
 	SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\TicTacToe.exe")
-	SET(CPACK_NSIS_DISPLAY_NAME "TicTacToe - ${LASER_SCANNER_VERSION}")
+	SET(CPACK_NSIS_DISPLAY_NAME "TicTacToe - ${TIC_TAC_TOE_VERSION}")
 	SET(CPACK_NSIS_MODIFY_PATH ON)
 	SET(CPACK_COMPONENTS_ALL bin_tictactoe)
 	if (CMAKE_CL_64)
