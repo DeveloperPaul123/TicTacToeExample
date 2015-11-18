@@ -25,23 +25,47 @@ Player::Player(PlayerType type) {
 	type = mType;
 }
 
-Board::Board(QWidget* parent) : QWidget(parent) {
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; i < 3; i++) {
-			board[i][j] = 0;
-			availablePoints->append(new Point(i, j));
-		}
-	}
+PlayerType Player::getPlayerType() {
+	return mType;
+}
+
+BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	resize(sizeHint());
 }
 
-QSize Board::sizeHint() {
+void BoardWidget::updateBoard(const Board &board) {
+	//update the board based on current play. 
+}
+
+void BoardWidget::paintEvent(QPaintEvent *event) {
+	QPainter painter(this);
+	painter.setBrush(Qt::NoBrush);
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setPen(QPen(QColor(0, 0, 0), 2.0, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin));
+
+	int thirdWidth = width() / 3;
+	int thirdHeight = height() / 3;
+
+	painter.drawLine(0.0, 0.0, width(), height());
+}
+
+QSize BoardWidget::sizeHint() const {
 	return QSize(100, 100);
 }
 
+Board::Board() {
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; i < 3; i++) {
+			board[i][j] = 0;
+			availablePoints.push_back(new Point(i, j));
+		}
+	}
+
+}
+
 bool Board::isGameOver() {
-	return (hasXWon() || hasOWon() || availablePoints->length() == 0);
+	return (hasXWon() || hasOWon() || availablePoints.size() == 0);
 }
 
 bool Board::hasXWon() {
@@ -78,29 +102,21 @@ bool Board::hasOWon() {
 	return false;
 }
 
-QList<Point*> Board::getAvailablePoints() {
-	return *availablePoints;
+vector<Point*> Board::getAvailablePoints() {
+	return availablePoints;
 }
 
 void Board::addAPlay(Point play, Player player) {
-	for (int i = 0; i < availablePoints->length(); i++) {
-		Point *p = availablePoints->at(i);
+	for (int i = 0; i < availablePoints.size(); i++) {
+		Point *p = availablePoints.at(i);
 		if (p->equals(play)){
-			availablePoints->removeOne(p);
+			availablePoints.erase(availablePoints.begin() + i);
 			board[p->getX()][p->getY()] = player.getPlayerType();
 			break;
 		}
 	}
 }
 
-void Board::paintEvent(QPaintEvent * event) {
-	QPainter painter(this);
-	painter.setBrush(Qt::NoBrush);
-	painter.setPen(QPen(QColor(0, 0, 0), 2.0, Qt::SolidLine, Qt::RoundCap, Qt::BevelJoin));
-
-	int thirdWidth = width() / 3;
-	int thirdHeight = height() / 3;
-}
 
 TicTacToe::TicTacToe(Board *board) {
 	mBoard = board;

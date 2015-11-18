@@ -22,6 +22,7 @@ private:
     Ui::MainWindow *ui;
 	TicTacToe *game;
 	Board *board;
+	BoardWidget *boardWidget;
 	
 };
 

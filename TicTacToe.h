@@ -7,6 +7,9 @@
 #include "qpainter.h"
 #include "qevent.h"
 #include "qcolor.h"
+#include <vector>
+
+using namespace std;
 
 class Point {
 public:
@@ -30,22 +33,26 @@ private:
 	PlayerType mType;
 };
 
-class Board : public QWidget {
-	Q_OBJECT
+class Board {
 public:
 	Board();
-	Board(QWidget *parent);
 	bool hasXWon();
 	bool hasOWon();
 	bool isGameOver();
-	QList<Point*> getAvailablePoints();
+	vector<Point*> getAvailablePoints();
 	void addAPlay(Point play, Player player);
-	QList<Point*> *availablePoints = new QList<Point*>();
 
 private:
 	int board[3][3];
+	vector<Point*> availablePoints;
+};
 
-protected: 
+class BoardWidget : public QWidget {
+public:
+	BoardWidget(QWidget*parent);
+	void updateBoard(const Board &board);
+
+protected:
 	void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 	QSize sizeHint() const;
 };

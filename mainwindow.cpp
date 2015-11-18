@@ -11,7 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartClicked()));
 	board = new Board();
 	game = new TicTacToe(board);
-	ui->verticalLayout->addWidget(board);
+	boardWidget = new BoardWidget(this);
+
+	ui->verticalLayout->addWidget(boardWidget);
 }
 
 MainWindow::~MainWindow()
