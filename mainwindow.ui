@@ -27,16 +27,6 @@
      <string>Difficulty</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>10</y>
-      <width>91</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
@@ -61,6 +51,49 @@
      <string>Start</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>10</y>
+      <width>131</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Computer Goes First</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>10</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Easy</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Medium</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Hard</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Impossible</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -68,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>466</width>
-     <height>29</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

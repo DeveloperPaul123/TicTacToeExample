@@ -3,10 +3,13 @@
 
 #include <QMainWindow>
 #include "TicTacToe.h"
+#include "qmessagebox.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+enum GameState {WAITING, PLAYING, DONE};
 
 class MainWindow : public QMainWindow
 {
@@ -16,14 +19,22 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+	void startGame();
+	bool checkForWin();
+
 public slots:
 	void onStartClicked();
+	void onUserPlayed(Point p);
+
 private:
     Ui::MainWindow *ui;
 	TicTacToe *game;
 	Board *board;
 	BoardWidget *boardWidget;
-	
+	GameState mState;
+	Player *user;
+	ComputerPlayer *compPlayer;
+	Player currentPlayer;
 };
 
 #endif // MAINWINDOW_H
