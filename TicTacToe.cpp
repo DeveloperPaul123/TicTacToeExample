@@ -143,7 +143,7 @@ void BoardWidget::paintEvent(QPaintEvent *event) {
 		}
 	}
 
-	painter.setPen(QPen(QColor(51, 102, 204), 2.0, Qt::SolidLine, Qt::RoundCap));
+	painter.setPen(QPen(QColor(51, 102, 204), 6.0, Qt::SolidLine, Qt::RoundCap));
 	//draw x's and o's
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -186,11 +186,11 @@ QPainterPath BoardWidget::getXPath(int row, int col) {
 
 	//define a bounding rect. 
 	QRect rect = *rects[row][col];
-
-	path->moveTo(rect.left(), rect.top());
-	path->lineTo(rect.right(), rect.bottom());
-	path->moveTo(rect.right(), rect.top());
-	path->lineTo(rect.left(), rect.bottom());
+	int padding = 15;
+	path->moveTo(rect.left()+10, rect.top()+10);
+	path->lineTo(rect.right()-10, rect.bottom()-10);
+	path->moveTo(rect.right()-10, rect.top()+10);
+	path->lineTo(rect.left()+10, rect.bottom()-10);
 
 	return *path;
 }
@@ -208,8 +208,9 @@ QPainterPath BoardWidget::getOPath(int row, int col) {
 
 	//define a bounding rect. 
 	QRect rect = *rects[row][col];
-
+	int padding = 15;
 	qreal radius = qMin(rect.width()/2, rect.height()/2);
+	radius -= padding;
 	path->addEllipse(rect.center(), radius, radius);
 	return *path;
 }
