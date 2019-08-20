@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "TicTacToe.h"
+#include "tictactoe.h"
 #include "qmessagebox.h"
 
 namespace Ui {

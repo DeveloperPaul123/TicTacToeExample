@@ -1,19 +1,18 @@
 #ifndef TICTACTOE_H
 #define TICTACTOE_H
 
-#include "qlist.h"
-#include "qstring.h"
-#include "qwidget.h"
-#include "qpainter.h"
-#include "qevent.h"
-#include "qcolor.h"
+#include <QList>
+#include <QString>
+#include <QWidget>
+#include <QPainter>
+#include <QEvent>
+#include <QColor>
+#include <QPainterPath>
+#include <QRect>
+#include <QtMath>
+
 #include <vector>
 #include <stdlib.h>
-#include "qpainterpath.h"
-#include "qrect.h"
-#include "qmath.h"
-
-using namespace std;
 
 class Point {
 public:
@@ -47,8 +46,8 @@ public:
 	bool hasXWon();
 	bool hasOWon();
 	bool isGameOver();
-	vector<Point*> getAvailablePoints();
-	vector<Point*> getPlayedPoints();
+	std::vector<Point*> getAvailablePoints();
+	std::vector<Point*> getPlayedPoints();
 	bool addAPlay(Point play, Player *player);
 	void removePlay(Point play);
 	PlayerType readBoard(Point p);
@@ -56,8 +55,8 @@ public:
 
 private:
 	int board[3][3];
-	vector<Point*> *availablePoints;
-	vector<Point*> *playedPoints;
+	std::vector<Point*> *availablePoints;
+	std::vector<Point*> *playedPoints;
 };
 
 class BoardWidget : public QWidget {

@@ -1,4 +1,6 @@
-#include "TicTacToe.h"
+#include "tictactoe.h"
+
+#include <QMouseEvent>
 
 /**
 * Default constructor. 
@@ -105,7 +107,7 @@ BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
 */
 void BoardWidget::updateBoard(Board &b) {
 	//update the board based on current play. 
-	vector<Point*> points = b.getPlayedPoints();
+	std::vector<Point*> points = b.getPlayedPoints();
 	for (int i = 0; i < points.size(); i++) {
 		int x = points.at(i)->getX();
 		int y = points.at(i)->getY();
@@ -247,8 +249,8 @@ void BoardWidget::mousePressEvent(QMouseEvent *event) {
 Board::Board() {
 
 	//initialize the board and vectors. 
-	availablePoints = new vector<Point*>();
-	playedPoints = new vector<Point*>();
+	availablePoints = new std::vector<Point*>();
+	playedPoints = new std::vector<Point*>();
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -326,7 +328,7 @@ bool Board::hasOWon() {
 * Returns the current vector of played points. 
 * @return vector<Point*> the current vector of points. 
 */
-vector<Point*> Board::getPlayedPoints() {
+std::vector<Point*> Board::getPlayedPoints() {
 	return *playedPoints;
 }
 
@@ -334,7 +336,7 @@ vector<Point*> Board::getPlayedPoints() {
 * Returns a vector of available points. 
 * @return vector<Point*> a vector of available points. 
 */
-vector<Point*> Board::getAvailablePoints() {
+std::vector<Point*> Board::getAvailablePoints() {
 	return *availablePoints;
 }
 
@@ -384,9 +386,9 @@ void Board::removePlay(Point play) {
 */
 void Board::clearBoard() {
 	availablePoints->clear();
-	availablePoints = new vector<Point*>();
+	availablePoints = new std::vector<Point*>();
 	playedPoints->clear();
-	playedPoints = new vector<Point*>();
+	playedPoints = new std::vector<Point*>();
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			board[i][j] = NO_ONE;
@@ -470,9 +472,9 @@ ComputerMove ComputerPlayer::getBestMove(Board& board, Player *player) {
 	}
 
 	//available points. 
-	vector<Point*> availablePoints = board.getAvailablePoints();
+	std::vector<Point*> availablePoints = board.getAvailablePoints();
 	//vector to hold all the moves we make to look through them later. 
-	vector<ComputerMove> moves;
+	std::vector<ComputerMove> moves;
 	
 	//go through moves. 
 	for (int i = 0; i < availablePoints.size(); i++) {
