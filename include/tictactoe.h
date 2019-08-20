@@ -12,7 +12,6 @@
 #include <QtMath>
 
 #include <vector>
-#include <stdlib.h>
 
 class Point {
 public:
