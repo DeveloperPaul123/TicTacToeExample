@@ -36,26 +36,51 @@ namespace tictactoe
 
 	bool board::is_game_over() const
 	{
-		return (has_player_won(player_shape::circle) || has_player_won(player_shape::cross)) || available_points_.empty();
+		const auto available_points = get_available_positions();
+		return (has_player_won(player_shape::circle) || has_player_won(player_shape::cross)) || available_points.empty();
 	}
 
 	std::vector<point> board::get_available_positions() const
 	{
-		return available_points_;
+		std::vector<point> available_points;
+		for (auto row = 0; row < size_; row++)
+		{
+			for (auto col = 0; col < size_; col++)
+			{
+				if (read_board(row, col) == player_shape::open)
+				{
+					// not that x is the column, y is row.
+					available_points.emplace_back(point(col, row ));
+				}
+			}
+		}
+		return available_points;
 	}
 
 	std::vector<point> board::get_played_positions() const
 	{
-		return played_points_;
+		std::vector<point> played_points;
+		for (auto row = 0; row < size_; row++)
+		{
+			for (auto col = 0; col < size_; col++)
+			{
+				if (read_board(row, col) == player_shape::open)
+				{
+					// not that x is the column, y is row.
+					played_points.emplace_back(point(col, row));
+				}
+			}
+		}
+
+		return played_points;
 	}
 
 	bool board::add_play(const point& play, const player_shape& player)
 	{
-		const auto available_point = std::find(available_points_.begin(), available_points_.end(), play);
-		if(available_point != std::end(available_points_))
+		auto available_points = get_available_positions();
+		const auto available_point = std::find(available_points.begin(), available_points.end(), play);
+		if(available_point != std::end(available_points))
 		{
-			played_points_.emplace_back(*available_point);
-			available_points_.erase(available_point);
 			write_board(play, player);
 			return true;
 		}
@@ -65,11 +90,10 @@ namespace tictactoe
 
 	bool board::remove_play(const point& play)
 	{
-		const auto played_point = std::find(played_points_.begin(), played_points_.end(), play);
-		if(played_point != std::end(played_points_))
+		auto played_points = get_played_positions();
+		const auto played_point = std::find(played_points.begin(), played_points.end(), play);
+		if(played_point != std::end(played_points))
 		{
-			available_points_.emplace_back(*played_point);
-			played_points_.erase(played_point);
 			write_board(play, player_shape::open);
 			return true;
 		}
@@ -79,20 +103,9 @@ namespace tictactoe
 
 	void board::clear()
 	{
-		available_points_.clear();
-		played_points_.clear();
-
 		std::fill(board_.get(),
 			board_.get() + (size_ * size_),
 			static_cast<int>(player_shape::open));
-
-		for (size_type row = 0; row < size_; row++)
-		{
-			for (size_type col = 0; col < size_; col++)
-			{
-				available_points_.emplace_back(point(row, col));
-			}
-		}
 
 		for (auto callback : callbacks_)
 		{
@@ -112,6 +125,11 @@ namespace tictactoe
 	void board::add_callback(board_callback* callback)
 	{
 		callbacks_.emplace_back(callback);
+	}
+
+	board::size_type board::size() const
+	{
+		return size_;
 	}
 
 	player_shape board::read_board(const point& pt) const

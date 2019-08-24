@@ -12,9 +12,9 @@ namespace tictactoe
 	void computer_player::perform_move(std::weak_ptr<board> board)
 	{
 		depth_ = 0;
-		const auto computer_move = get_best_move(board, *this);
 		if(auto brd_ptr = board.lock())
 		{
+			const auto computer_move = get_best_move(*brd_ptr, *this);
 			brd_ptr->add_play(computer_move.play, this->shape);
 		}
 		
@@ -50,65 +50,97 @@ namespace tictactoe
 		}
 	}
 
-	player_move computer_player::get_best_move(std::weak_ptr<board> board_ptr, const player& current_player)
+	int computer_player::score_board(tictactoe::board& board)
 	{
-
-		if(auto board = board_ptr.lock())
+		if (board.has_player_won(this->shape))
 		{
-			//base case, check for end state. 
-			if (board->has_player_won(player_shape::circle)) {
-				//computer won. User is always x.
-				return player_move(score_);
-			}
-			if (board->has_player_won(player_shape::cross)) {
-				//computer lost, he doesn't like this. 
-				return player_move(-1 * opponent_score_);
-			}
-			if (board->is_game_over()) {
-				//tie.
-				return player_move(0);
-			}
+			return 10;
+		}
+		else if (board.has_player_won(player_shape::cross))
+		{
+			return -10;
+		}
+		return 0;
+	}
 
-			//available points. 
-			auto available_points = board->get_available_positions();
-			//vector to hold all the moves we make to look through them later. 
-			std::vector<player_move> moves;
-
-			//go through moves. 
-			for (std::vector<player_move>::size_type i = 0; i < available_points.size(); i++) {
-				player_move current_move;
-				auto current_play = available_points.at(i);
-				current_move.play = current_play;
-				//add player_move. 
-				board->add_play(current_play, current_player.shape);
-				//recursive call. 
-				if (current_player.shape == player_shape::cross) {
-					current_move.score = get_best_move(board, player{ player_shape::circle }).score;
-				}
-				else if (current_player.shape == player_shape::circle) {
-					current_move.score = get_best_move(board, player{ player_shape::cross }).score;
-				}
-				//remember the player_move we made. 
-				moves.emplace_back(current_move);
-
-				//remove the player_move from the board. 
-				board->remove_play(available_points.at(i));
-			}
-
-
-			// Pick best player_move for the current player.
-			std::sort(moves.begin(), moves.end());
-
-			if (current_player.shape == player_shape::circle)
-			{
-				// computer won	so we want the highest value
-				return *(moves.end() - 1);
-			}
-
-			return *moves.begin();
+	int computer_player::minimax(tictactoe::board board, int depth, bool is_maximizer)
+	{
+		const auto score = score_board(board);
+		if (score != 0)
+		{
+			return score;
 		}
 
-		// default return
-		return player_move(0);
+		if (board.get_available_positions().empty())
+		{
+			return 0;
+		}
+
+		if (is_maximizer)
+		{
+			int best = -1000;
+			for (auto row = 0; row < board.size(); row++)
+			{
+				for (auto col = 0; col < board.size(); col++)
+				{
+					if (board.read_board(row, col) == player_shape::open)
+					{
+						board.add_play(tictactoe::point(col, row), this->shape);
+						best = std::max(best, minimax(board, depth + 1, !is_maximizer));
+						board.remove_play(tictactoe::point(col, row));
+					}
+				}
+			}
+			return best;
+		}
+		else
+		{
+			int best = 1000;
+			for (auto row = 0; row < board.size(); row++)
+			{
+				for (auto col = 0; col < board.size(); col++)
+				{
+					if (board.read_board(row, col) == player_shape::open)
+					{
+						board.add_play(tictactoe::point(col, row), player_shape::cross);
+						best = std::min(best, minimax(board, depth + 1, !is_maximizer));
+						board.remove_play(tictactoe::point(col, row));
+					}
+				}
+			}
+			return best;
+		}
 	}
+
+	player_move computer_player::get_best_move(tictactoe::board &board, const player& current_player)
+	{
+		int best_value = -1000;
+		tictactoe::point best_move(-1, -1);
+	
+		//available points. 
+		auto available_points = board.get_available_positions();
+
+		//go through moves. 
+		for (std::vector<player_move>::size_type i = 0; i < available_points.size(); i++) {
+			auto current_play = available_points.at(i);
+			//add player_move. 
+			board.add_play(current_play, current_player.shape);
+			auto move_value = minimax(board, 0, false);
+
+			//remove the player_move from the board. 
+			board.remove_play(available_points.at(i));
+
+			if (move_value > best_value)
+			{
+				best_value = move_value;
+				best_move = current_play;
+			}
+		}
+
+		player_move move;
+		move.play = best_move;
+		move.score = best_value;
+		return move;
+	}
+	
 }

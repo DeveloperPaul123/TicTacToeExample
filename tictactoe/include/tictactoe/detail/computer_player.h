@@ -24,8 +24,9 @@ namespace tictactoe
 		unsigned int max_depth_ = 1000;
 		int score_{0};
 		int opponent_score_{0};
-
-		player_move get_best_move(std::weak_ptr<board> board_ptr, const player& current_player);
+		int score_board(tictactoe::board &board);
+		int minimax(tictactoe::board board, int depth, bool is_maximizer);
+		player_move get_best_move(tictactoe::board &board, const player& current_player);
 	};
 
 	inline bool operator<(const player_move &left, const player_move &right)

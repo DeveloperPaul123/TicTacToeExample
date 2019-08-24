@@ -31,14 +31,13 @@ namespace tictactoe
 		player_shape read_board(const point& pt) const;
 		player_shape read_board(int row, int col) const;
 		void add_callback(board_callback* callback);
+		size_type size() const;
 
 	private:
 		void write_board(const point& pt, const player_shape &shape) const;
 
 		size_type size_{0};
 		std::unique_ptr<int[]> board_{};
-		std::vector<point> available_points_{};
-		std::vector<point> played_points_{};
 		std::vector<board_callback*> callbacks_;
 	};
 }
