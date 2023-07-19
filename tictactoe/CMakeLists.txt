@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.12.1)
 # basic tictactoe library
 project(tictactoe
     LANGUAGES CXX
-	VERSION ${TIC_TAC_TOE_VERSION}
-	DESCRIPTION "TicTacToe game library.")
+    VERSION ${TIC_TAC_TOE_VERSION}
+    DESCRIPTION "TicTacToe game library.")
 
 # set all the project source files. 
 set(project_sources 
@@ -30,5 +30,9 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_include_directories(${PROJECT_NAME} 
-	PUBLIC include
+    PUBLIC include
+)
+
+target_compile_features(${PROJECT_NAME} 
+    PUBLIC cxx_std_20
 )

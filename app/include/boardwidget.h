@@ -4,25 +4,25 @@
 #include <QPoint>
 #include <tictactoe/tictactoe>
 
-class BoardWidget : public QWidget , tictactoe::board::board_callback 
+class BoardWidget : public QWidget
 {
-	Q_OBJECT;
+    Q_OBJECT
+
 public:
-	BoardWidget(std::shared_ptr<tictactoe::board> board, QWidget* parent = Q_NULLPTR);
-	void board_changed() override;
+    BoardWidget(std::shared_ptr<tictactoe::board> board, QWidget* parent = Q_NULLPTR);
 
 private:
-	std::shared_ptr<tictactoe::board> board_ptr_;
-	QRect rects_[3][3];
+    std::shared_ptr<tictactoe::board> board_ptr_;
+    QRect rects_[3][3];
 
-	QPainterPath getShapePath(int row, int col, const tictactoe::player_shape& shape);
+    [[nodiscard]] QPainterPath getShapePath(int row, int col, const tictactoe::player_shape& shape) const;
 
 signals:
-	void clicked();
-	void userPlayed(QPoint p);
+    void clicked();
+    void userPlayed(QPoint p);
 
 protected:
-	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
-	QSize sizeHint() const override;
-	void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+    void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
+    [[nodiscard]] QSize sizeHint() const override;
+    void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 };
