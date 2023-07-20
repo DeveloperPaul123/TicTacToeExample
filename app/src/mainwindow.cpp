@@ -62,7 +62,7 @@ void MainWindow::onUserPlayed(QPoint p) {
 		}
 		else 
 		{
-			if (board_ptr_->add_play(tictactoe::point(p.y(), p.x()), user_.shape)) 
+			if (board_ptr_->add_play(tictactoe::point(p.x(), p.y()), user_.shape)) 
 			{
 				computer_player_.perform_move(board_ptr_);
 			}	

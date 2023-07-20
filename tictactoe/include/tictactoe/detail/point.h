@@ -7,30 +7,32 @@ namespace tictactoe
 	{
 	public:
 		point_t() = default;
-		point_t(T x, T y)
-			:x_(x), y_(y)
+		point_t(T row, T column)
+			:row_(row), col_(column)
 		{
 
 		}
-		T x() const
+
+		[[nodiscard]] T row() const
 		{
-			return x_;
+			return row_;
 		}
-		T y() const
+
+		[[nodiscard]] T col() const
 		{
-			return y_;
+			return col_;
 		}
 
 	private:
-		T x_;
-		T y_;
+		T row_;
+		T col_;
 
 	};
 
 	template<typename T>
 	bool operator==(const point_t<T>& left, const point_t<T>& right)
 	{
-		return left.x() == right.x() && left.y() == right.y();
+		return left.row() == right.row() && left.col() == right.col();
 	}
 
 	using point = point_t<int>;

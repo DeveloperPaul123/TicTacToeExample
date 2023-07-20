@@ -23,7 +23,7 @@ BoardWidget::BoardWidget(std::shared_ptr<tictactoe::board> board, QWidget* paren
         }
     }
     board_ptr_ = std::move(board);
-    board_ptr_->add_callback([this] { update(); });
+    board_ptr_->add_board_change_callback([this] { update(); });
 }
 
 /**

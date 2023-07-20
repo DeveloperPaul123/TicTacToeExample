@@ -9,8 +9,18 @@ set (TIC_TAC_TOE_VERSION "${TIC_TAC_TOE_VERSION_MAJOR}.${TIC_TAC_TOE_VERSION_MIN
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(cmake/CPM.cmake)
+# testing framework
+CPMAddPackage(
+    NAME snitch
+    GITHUB_REPOSITORY cschreib/snitch
+    VERSION 1.1.1
+)
+
 # set project name. 
 project(tictactoe-example)
+
+enable_testing()
 
 add_subdirectory(tictactoe)
 add_subdirectory(app)
