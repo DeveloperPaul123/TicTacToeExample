@@ -95,7 +95,8 @@ QPainterPath BoardWidget::getShapePath(int row, int col, const tictactoe::player
 * Size hint for the widget. Used when being laid out.
 * @return QSize the size we want for the widget.
 */
-QSize BoardWidget::sizeHint() const {
+QSize BoardWidget::sizeHint() const
+{
     return {100, 100};
 }
 

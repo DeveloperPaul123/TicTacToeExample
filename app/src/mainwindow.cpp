@@ -6,16 +6,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-	connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartClicked()));
+	connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
 	board_ptr_ = std::make_shared<tictactoe::board>(3);
 	board_widget_ = std::make_unique<BoardWidget>(board_ptr_, this);
-
 	ui->verticalLayout->addWidget(board_widget_.get());
 	game_state_ = waiting;
 	
 	//user goes first
-	connect(board_widget_.get(), SIGNAL(userPlayed(QPoint)), 
-		this, SLOT(onUserPlayed(QPoint)));
+	connect(board_widget_.get(), &BoardWidget::userPlayed, 
+		this, &MainWindow::onUserPlayed);
 }
 
 MainWindow::~MainWindow()

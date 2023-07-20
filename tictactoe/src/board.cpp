@@ -53,6 +53,7 @@ namespace tictactoe
 
     bool board::has_player_won(const player_shape& shape) const
     {
+        // check diagonals
         if ((read_board(0, 0) == read_board(1, 1) &&
             read_board(0, 0) == read_board(2, 2) && read_board(0, 0) == shape)
             || (read_board(0, 2) == read_board(1, 1) &&
