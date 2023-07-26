@@ -15,6 +15,7 @@ namespace tictactoe
 
 		using size_type = std::size_t;
 		explicit board(const size_type& single_dimension_size = 3);
+		board(std::initializer_list<player_shape> init_list);
 		board(const board& other);
 		board(board&& other) noexcept;
 		board& operator=(const board& other);

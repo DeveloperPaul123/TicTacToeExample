@@ -10,15 +10,10 @@ namespace tictactoe
 		set_difficulty(diff);
 	}
 
-	void computer_player::perform_move(const std::weak_ptr<board>& board)
+	void computer_player::perform_move(board& board)
 	{
-		if (const auto brd_ptr = board.lock())
-		{
-			if (brd_ptr->is_game_over()) return;
-			const auto computer_move = get_best_move(*brd_ptr, *this);
-			assert(brd_ptr->add_play(computer_move.play, this->shape));
-		}
-
+		const auto computer_move = get_best_move(board, *this);
+		assert(board.add_play(computer_move.play, this->shape));
 	}
 
 	void computer_player::set_difficulty(const difficulty& diff)
@@ -39,22 +34,71 @@ namespace tictactoe
 		}
 	}
 
-	int computer_player::score_board(tictactoe::board& board) const
+	computer_player::score_type computer_player::score_board(const tictactoe::board& board, int depth) const
 	{
-		if (board.has_player_won(this->shape))
+		// todo: favor center at beginning of game
+
+		constexpr auto max_score = 1000.;
+		// check if we won
+		if (board.has_player_won(shape))
 		{
-			return 10;
+			return max_score / depth;
 		}
-		if (board.has_player_won(player_shape::cross))
+
+		// check if opponent won
+		if (board.has_player_won(get_opposite_shape(shape)))
 		{
-			return -10;
+			return -1. * max_score / depth;
 		}
+
+		// todo handle even/odd board sizes (i.e. non 3x3)
+
+		if (board.get_played_positions().size() == 1 && board.read_board(1, 1) == shape)
+		{
+			// return the max score because we have already checked is we have won
+			return max_score;
+		}
+
 		return 0;
 	}
 
-	int computer_player::minimax(tictactoe::board board, int depth, bool is_maximizer, int max_depth)
+	computer_player::score_type computer_player::negamax(tictactoe::board board, int depth, score_type alpha, score_type beta, player_shape shape)
 	{
-		const auto score = score_board(board);
+		const auto score = score_board(board, depth);
+		// if score is 0, no one has won yet
+		if (score != 0 || depth >= max_depth_)
+		{
+			return score;
+		}
+
+		if (board.get_available_positions().empty())
+		{
+			return 0;
+		}
+
+		auto best = std::numeric_limits<score_type>::min();
+		const auto& available_positions = board.get_available_positions();
+
+		for (auto& position : available_positions)
+		{
+
+			if (board.add_play(position, shape))
+			{
+				best = std::max(best, -negamax(board, depth + 1, -beta, -alpha, get_opposite_shape(shape)));
+				assert(board.remove_play(position));
+				alpha = std::max(alpha, best);
+				if (alpha >= beta)
+				{
+					return best;
+				}
+			}
+		}
+		return best;
+	}
+
+	computer_player::score_type computer_player::minimax(tictactoe::board board, int depth, bool is_maximizer, int max_depth)
+	{
+		const auto score = score_board(board, depth);
 		// if score is 0, no one has won yet
 		if (score != 0 || depth >= max_depth)
 		{
@@ -68,7 +112,7 @@ namespace tictactoe
 
 		if (is_maximizer)
 		{
-			int best = std::numeric_limits<int>::min();
+			auto best = std::numeric_limits<score_type>::min();
 			for (std::size_t row = 0; row < board.size(); row++)
 			{
 				for (std::size_t col = 0; col < board.size(); col++)
@@ -89,7 +133,7 @@ namespace tictactoe
 		}
 
 		// minimizer
-		int best = std::numeric_limits<int>::max();
+		auto best = std::numeric_limits<score_type>::max();
 		for (std::size_t row = 0; row < board.size(); row++)
 		{
 			for (std::size_t col = 0; col < board.size(); col++)
@@ -122,8 +166,8 @@ namespace tictactoe
 			auto current_play = available_point;
 			//add player_move. 
 			assert(board.add_play(current_play, current_player.shape));
-			const auto move_value = minimax(board, 0, false, max_depth_);
-
+			// const auto move_value = minimax(board, 0, false, max_depth_);
+			const auto move_value = negamax(board, 1, -1000, 1000, get_opposite_shape(shape));
 			//remove the player_move from the board. 
 			assert(board.remove_play(available_point));
 

@@ -1,5 +1,7 @@
 #include "tictactoe/detail/board.h"
 
+#include <algorithm>
+#include <ranges>
 #include <iterator>
 
 namespace tictactoe
@@ -9,6 +11,13 @@ namespace tictactoe
 	{
 		board_ = std::make_unique<int[]>(single_dimension_size * single_dimension_size);
 		clear();
+	}
+
+	board::board(std::initializer_list<player_shape> init_list)
+	{
+		size_ = static_cast<size_type>(std::sqrt(init_list.size()));
+		board_ = std::make_unique<int[]>(size_ * size_);
+		std::ranges::transform(init_list, board_.get(), [](const player_shape& shape) { return static_cast<int>(shape); });
 	}
 
 	board::board(const board& other)
@@ -86,6 +95,7 @@ namespace tictactoe
 	std::vector<point> board::get_available_positions() const
 	{
 		std::vector<point> available_points;
+
 		for (size_type row = 0; row < size_; row++)
 		{
 			for (size_type col = 0; col < size_; col++)
