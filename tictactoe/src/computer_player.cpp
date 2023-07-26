@@ -38,7 +38,7 @@ namespace tictactoe
 	{
 		// todo: favor center at beginning of game
 
-		constexpr auto max_score = 1000.;
+		constexpr auto max_score = 1000;
 		// check if we won
 		if (board.has_player_won(shape))
 		{
@@ -48,15 +48,26 @@ namespace tictactoe
 		// check if opponent won
 		if (board.has_player_won(get_opposite_shape(shape)))
 		{
-			return -1. * max_score / depth;
+			return -1 * max_score / depth;
 		}
 
 		// todo handle even/odd board sizes (i.e. non 3x3)
-
 		if (board.get_played_positions().size() == 1 && board.read_board(1, 1) == shape)
 		{
 			// return the max score because we have already checked is we have won
 			return max_score;
+		}
+
+		// check if we blocked the other player from winning
+		if (board.was_player_blocked(get_opposite_shape(shape)))
+		{
+			return max_score / (depth + 2);
+		}
+
+		if (board.was_player_blocked(shape))
+		{
+			// we were blocked
+			return -1 * max_score / (depth + 2);
 		}
 
 		return 0;

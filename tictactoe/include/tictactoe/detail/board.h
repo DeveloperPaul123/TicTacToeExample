@@ -29,7 +29,7 @@ namespace tictactoe
 		void clear() const;
 		[[nodiscard]] player_shape read_board(const point& pt) const;
 		[[nodiscard]] player_shape read_board(size_type row, size_type col) const;
-
+		[[nodiscard]] bool was_player_blocked(const player_shape& shape) const;
 		template<typename Callback>
 			requires std::invocable<Callback>
 		void add_board_change_callback(Callback&& callback)

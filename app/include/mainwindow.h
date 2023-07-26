@@ -34,7 +34,7 @@ private:
 	game_state game_state_;
 	tictactoe::player user_{ tictactoe::player_shape::cross };
 	tictactoe::computer_player computer_player_;
-	tictactoe::player current_player_;
+	tictactoe::player current_player_{};
 };
 
 #endif // MAINWINDOW_H

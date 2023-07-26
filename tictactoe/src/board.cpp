@@ -171,6 +171,100 @@ namespace tictactoe
 		return static_cast<player_shape>(board_[index]);
 	}
 
+	bool board::was_player_blocked(const player_shape& shape) const
+	{
+		// check rows
+		for (size_type row = 0; row < size_; row++)
+		{
+			// blocked on right
+			if (read_board(row, 0) == shape && read_board(row, 1) == shape
+				&& read_board(row, 2) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+			// blocked on left
+			if (read_board(row, 1) == shape && read_board(row, 2) == shape
+				&& read_board(row, 0) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+
+			// blocked in the center
+			if (read_board(row, 0) == shape && read_board(row, 2) == shape
+				&& read_board(row, 1) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+		}
+
+		// check columns
+		for (size_type col = 0; col < size_; col++)
+		{
+			// blocked bottom
+			if (read_board(0, col) == shape && read_board(1, col) == shape
+				&& read_board(2, col) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+			// blocked top
+			if (read_board(1, col) == shape && read_board(2, col) == shape
+				&& read_board(0, col) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+			// blocked in the center
+			if (read_board(0, col) == shape && read_board(2, col) == shape
+				&& read_board(1, col) == get_opposite_shape(shape))
+			{
+				return true;
+			}
+		}
+
+
+		// check diagonals
+		// blocked bottom right
+		if (read_board(0, 0) == shape && read_board(1, 1) == shape
+			&& read_board(2, 2) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+
+		// blocked top left
+		if (read_board(1, 1) == shape && read_board(2, 2) == shape
+			&& read_board(0, 0) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+
+		// blocked in the center
+		if(read_board(0,0) == shape && read_board(2, 2) == shape
+			&& read_board(1,1) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+
+		// blocked bottom left
+		if (read_board(0, 2) == shape && read_board(1, 1) == shape
+			&& read_board(2, 0) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+
+		// blocked top right
+		if (read_board(1, 1) == shape && read_board(2, 0) == shape
+			&& read_board(0, 2) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+
+		// blocked in the center
+		if(read_board(0,2) == shape && read_board(2, 0) == shape
+			&& read_board(1,1) == get_opposite_shape(shape))
+		{
+			return true;
+		}
+	}
+
 	board::size_type board::size() const
 	{
 		return size_;
