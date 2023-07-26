@@ -29,7 +29,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-	std::shared_ptr<tictactoe::board> board_ptr_;
+	tictactoe::board board_;
 	std::unique_ptr<BoardWidget> board_widget_;
 	game_state game_state_;
 	tictactoe::player user_{ tictactoe::player_shape::cross };

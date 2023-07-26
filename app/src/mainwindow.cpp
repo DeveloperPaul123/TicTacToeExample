@@ -1,32 +1,32 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent) :
+	QMainWindow(parent),
+	ui(new Ui::MainWindow),
+	board_(3)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 	connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
-	board_ptr_ = std::make_shared<tictactoe::board>(3);
-	board_widget_ = std::make_unique<BoardWidget>(board_ptr_, this);
+	board_widget_ = std::make_unique<BoardWidget>(&board_, this);
 	ui->verticalLayout->addWidget(board_widget_.get());
 	game_state_ = waiting;
-	
+
 	//user goes first
-	connect(board_widget_.get(), &BoardWidget::userPlayed, 
+	connect(board_widget_.get(), &BoardWidget::userPlayed,
 		this, &MainWindow::onUserPlayed);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
-void MainWindow::startGame() 
+void MainWindow::startGame()
 {
 	game_state_ = playing;
 	if (ui->checkBox->isChecked()) {
-		computer_player_.perform_move(board_ptr_);
+		computer_player_.perform_move(board_);
 	}
 }
 
@@ -39,62 +39,62 @@ void MainWindow::onStartClicked() {
 	}
 	if (game_state_ == playing) {
 		//clear everything. 
-		board_ptr_->clear();
+		board_.clear();
 		game_state_ = playing;
 	}
 	else if (game_state_ == done) {
 		//clear everything. 
-		board_ptr_->clear();
+		board_.clear();
 		game_state_ = playing;
 	}
 
 	if (ui->checkBox->isChecked()) {
-		computer_player_.perform_move(board_ptr_);
+		computer_player_.perform_move(board_);
 	}
 }
 
 void MainWindow::onUserPlayed(QPoint p) {
 
 	if (game_state_ == playing) {
-		if (checkForWin()) 
+		if (checkForWin())
 		{
 			// ?
 		}
-		else 
+		else
 		{
-			if (board_ptr_->add_play(tictactoe::point(p.x(), p.y()), user_.shape)) 
+			if (board_.add_play(tictactoe::point(p.x(), p.y()), user_.shape))
 			{
-				computer_player_.perform_move(board_ptr_);
-			}	
+				computer_player_.perform_move(board_);
+			}
 			checkForWin();
 		}
 	}
 }
 
-bool MainWindow::checkForWin() 
+bool MainWindow::checkForWin()
 {
 	auto show_box = false;
 	QString message;
-	if (board_ptr_->has_player_won(tictactoe::player_shape::circle)) 
+	if (board_.has_player_won(tictactoe::player_shape::circle))
 	{
 		message = "You lost!";
 		game_state_ = done;
 		show_box = true;
 	}
-	else if (board_ptr_->has_player_won(tictactoe::player_shape::cross)) 
+	else if (board_.has_player_won(tictactoe::player_shape::cross))
 	{
 		message = "You won!";
 		game_state_ = done;
 		show_box = true;
 	}
-	if (board_ptr_->is_game_over()) 
+	if (board_.is_game_over())
 	{
 		message = "Draw!";
 		game_state_ = done;
 		show_box = true;
 	}
 
-	if(show_box)
+	if (show_box)
 	{
 		QMessageBox::information(this, tr("Game Over"), message);
 	}
