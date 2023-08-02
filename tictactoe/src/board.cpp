@@ -263,6 +263,8 @@ namespace tictactoe
 		{
 			return true;
 		}
+
+		return false;
 	}
 
 	board::size_type board::size() const
